@@ -17,6 +17,12 @@ class Mapping:
                 return range['dst_start'] + (num - range['src_start'])
         return num
 
+    def reverse_map_num(self, num: int) -> int:
+        for range in self.ranges:
+            if num >= range['dst_start'] and num < range['dst_start']+range['range_length']:
+                return range['src_start'] + (num - range['dst_start'])
+        return num 
+
     def __repr__(self) -> str:
         return self.ranges.__repr__()+'\n\n'
 
@@ -46,14 +52,20 @@ with open("./input.txt") as f:
         if len(parts) != 3:
             continue
         mappings[current_mapping].add_range(parts[0], parts[1], parts[2])
-    locations = []
-    for seed_range in seed_ranges:
-        print("on range", seed_range)
-        for seed in range(seed_range[0], seed_range[0]+seed_range[1]):
-            current = seed
-            for i, mapping in enumerate(mappings):
-                current = mapping.map_num(current)
-                if i == len(mappings)-1:
-                    locations += [current]
-    print(min(locations))
-    
+        
+    def in_seed_ranges(n: int) -> bool:
+        for s in seed_ranges:
+            if n >= s[0] and n < s[0]+s[1]:
+                print(s)
+                return True
+        return False
+
+    i = 0
+    while True:
+        current = i
+        for mapping in mappings[::-1]:
+            current = mapping.reverse_map_num(current)
+        if in_seed_ranges(current):
+            print(i)
+            break
+        i+=1
