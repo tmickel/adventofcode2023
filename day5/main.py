@@ -20,7 +20,7 @@ class Mapping:
     def __repr__(self) -> str:
         return self.ranges.__repr__()+'\n\n'
 
-seeds = []
+seed_ranges = []
 mappings = [
     Mapping(),
     Mapping(),
@@ -37,6 +37,7 @@ with open("./input.txt") as f:
         if line.startswith("seeds: "):
             remaining = line.strip("seeds: ")
             seeds = [int(n) for n in remaining.split()]
+            seed_ranges = [(seeds[i], seeds[i+1]) for i in range(0, len(seeds), 2)]
             continue
         if "-to-" in line:
             current_mapping += 1
@@ -46,11 +47,13 @@ with open("./input.txt") as f:
             continue
         mappings[current_mapping].add_range(parts[0], parts[1], parts[2])
     locations = []
-    for seed in seeds:
-        current = seed
-        for i, mapping in enumerate(mappings):
-            current = mapping.map_num(current)
-            if i == len(mappings)-1:
-                locations += [current]
+    for seed_range in seed_ranges:
+        print("on range", seed_range)
+        for seed in range(seed_range[0], seed_range[0]+seed_range[1]):
+            current = seed
+            for i, mapping in enumerate(mappings):
+                current = mapping.map_num(current)
+                if i == len(mappings)-1:
+                    locations += [current]
     print(min(locations))
     
