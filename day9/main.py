@@ -11,9 +11,10 @@ with open("./input.txt") as f:
                 new_level += [prev_level[i] - prev_level[i-1]]
             levels += [new_level]
         # up
-        levels[-1] += [0]
+        levels[-1].insert(0, 0)
         for i in range(len(levels)-2, -1, -1):
-            levels[i] += [levels[i][-1] + levels[i+1][-1]]
+            levels[i].insert(0, levels[i][0]- levels[i+1][0])
+        print(levels)
         # sum
-        total += levels[0][-1]
+        total += levels[0][0]
     print(total)
